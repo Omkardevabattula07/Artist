@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon with emoji (🧠 here) using inline SVG as data URI -->
+  <link rel="icon" type="image/svg+xml" 
+        href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="80" font-size="80" font-weight="bold" font-family="Arial">A🧠</text></svg>' />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #1a0033, #330066, #1a0033, #2a004d);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      width: 95%;
+      max-width: 420px;
+      background-color: rgba(26, 0, 51, 0.95);
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 0 20px #9f3dff, 0 0 40px #8000ff;
+      animation: floatUp 3s ease-out;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(80px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    h2 {
+      text-align: center;
+      color: #f0caff;
+      font-size: 26px;
+      margin-bottom: 25px;
+      text-shadow: 0 0 10px #d783ff;
+    }
+
+    form {
+      display: none;
+      flex-direction: column;
+    }
+
+    form.active {
+      display: flex;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="file"],
+    textarea {
+      background-color: #2c004d;
+      border: 1px solid #9f3dff;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
+      color: #fff;
+      font-size: 15px;
+      transition: 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      box-shadow: 0 0 8px #c261ff;
+      border-color: #c261ff;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 16px;
+      color: #aaa;
+    }
+
+    button {
+      background: linear-gradient(145deg, #9f3dff, #6e00cc);
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #a64dff;
+      animation: pulse 2s infinite;
+      transition: transform 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #a64dff; }
+      50% { box-shadow: 0 0 20px #d783ff; }
+      100% { box-shadow: 0 0 10px #a64dff; }
+    }
+
+    .toggle-link {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .toggle-link a {
+      color: #d3adff;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .toggle-link a:hover {
+      color: #3287f7;
+    }
+    
+        .active {
+            display: flex;
+        }
+
+        .error, .success {
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            background-color: #ff4d4d;
+        }
+
+        .success {
+            background-color: #33cc33;
+        }
+    @media screen and (max-width: 500px) {
+        body{
+      animation: gradientShift 15s ease infinite;
+
+        }
+        @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+      .container {
+        padding: 20px 15px;
+        width: 95%;
+      max-width: 420px;
+      background-color: rgba(26, 0, 51, 0.95);
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 0 20px #9f3dff, 0 0 40px #8000ff;
+      animation: floatUp 3s ease-out;
+      }
+      @keyframes floatUp {
+      0% { transform: translateY(80px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+      h2 {
+        font-size: 22px;
+      }
+      button {
+        font-size: 15px;
+        background: linear-gradient(145deg, #9f3dff, #6e00cc);
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      color: white;
+      /* font-size: 16px; */
+      cursor: pointer;
+      box-shadow: 0 0 10px #a64dff;
+      animation: pulse 2s infinite;
+      transition: transform 0.3s;
+        
+      }
+      .toggle-link a:hover {
+      color: #426eff;
+    }
+    
+    .toggle-link a {
+      color: #d3adff;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    
+        .active {
+            display: flex;
+        }
+
+        .error, .success {
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            background-color: #ff4d4d;
+        }
+
+        .success {
+            background-color: #33cc33;
+        }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #a64dff; }
+      50% { box-shadow: 0 0 20px #d783ff; }
+      100% { box-shadow: 0 0 10px #a64dff; }
+    }
+
+    }
+    #snow-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background: transparent;
+}
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+            {% for msg in messages %}
+            <div class="{{ msg.tags }}">{{ msg }}</div>
+        {% endfor %}
+  <h2 id="form-title">Login</h2>
+
+  <!-- Login Form -->
+  <form id="login-form" method="POST" enctype="multipart/form-data" class="active">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="login">
+
+    <input type="text" name="login_username" placeholder="Username" required>
+
+
+     <div class="input-group">
+      <input type="password" name="login_password" id="login-password" placeholder="Password" required>
+      <span class="eye-icon" onclick="toggleVisibility('login-password')">👁️</span>
+    </div> 
+     <div class="input-group">
+      <input type="password" name="login_security" id="login-how" placeholder="SecurityQuestion!!" required>
+      <span class="eye-icon" onclick="toggleVisibility('login-how')">👁️</span>
+    </div> 
+   
+    <button type="submit">Login</button>
+
+    <div class="toggle-link" style="color: whitesmoke;">Don't have an account? <a onclick="switchForm('register')">Register here</a></div>
+  </form>
+
+  <!-- Register Form -->
+  <form id="register-form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="register">
+
+    <input type="text" name="username" placeholder="Username" required>
+
+    <div class="input-group">
+      <input type="password" name="password" id="reg-password" placeholder="Password" required>
+      <span class="eye-icon" onclick="toggleVisibility('reg-password')">👁️</span>
+    </div>
+
+    <div class="input-group">
+      <input type="password" name="confirm" id="reg-confirm" placeholder="Confirm Password" required>
+      <span class="eye-icon" onclick="toggleVisibility('reg-confirm')">👁️</span>
+    </div>
+
+    <textarea name="bio" placeholder="Your Bio" rows="3" required></textarea>
+
+    <input type="file" name="pic" accept="image/*">
+
+    <div class="input-group">
+      <input type="password" name="security" id="reg-how" placeholder="How are you?" required>
+      <span class="eye-icon" onclick="toggleVisibility('reg-how')">👁️</span>
+    </div>
+
+    <button type="submit">Register</button>
+
+    <div class="toggle-link" style="color: whitesmoke;">Already have an account? <a onclick="switchForm('login')">Login here</a></div>
+  </form>
+</div>
+<canvas id="snow-canvas"></canvas>
+
+
+<script>
+  function switchForm(type) {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const title = document.getElementById('form-title');
+
+    if (type === 'register') {
+      loginForm.classList.remove('active');
+      registerForm.classList.add('active');
+      title.textContent = 'Register';
+    } else {
+      registerForm.classList.remove('active');
+      loginForm.classList.add('active');
+      title.textContent = 'Login';
+    }
+  }
+
+  const canvas = document.getElementById('snow-canvas');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let snowflakes = [];
+
+  function initCanvas() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    snowflakes = [];
+    for (let i = 0; i < 100; i++) {
+      snowflakes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 3 + 1,
+        d: Math.random() * 1 + 0.5 // slower descent
+      });
+    }
+  }
+
+  function drawSnowflakes() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.beginPath();
+    for (let i = 0; i < snowflakes.length; i++) {
+      const f = snowflakes[i];
+      ctx.moveTo(f.x, f.y);
+      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+    }
+    ctx.fill();
+    moveSnowflakes();
+  }
+
+  let angle = 0;
+
+  function moveSnowflakes() {
+    angle += 0.002; // very slow sway
+    for (let i = 0; i < snowflakes.length; i++) {
+      const f = snowflakes[i];
+      f.y += Math.pow(f.d, 1.2); // gently fall
+      f.x += Math.sin(angle) * 0.3; // gentle drift
+
+      if (f.y > height) {
+        snowflakes[i] = {
+          x: Math.random() * width,
+          y: 0,
+          r: f.r,
+          d: f.d
+        };
+      }
+    }
+  }
+
+  function animateSnow() {
+    drawSnowflakes();
+    requestAnimationFrame(animateSnow);
+  }
+
+  window.addEventListener('resize', initCanvas);
+  initCanvas();
+  animateSnow();
+
+
+</script>
+<script>
+  {% comment %} const togglePasswordButton = document.getElementById('toggle-password');
+const passwordField = document.getElementById('password');
+
+togglePasswordButton.addEventListener('click', () => {
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        togglePasswordButton.textContent = '🔒';
+    } else {
+        passwordField.type = 'password';
+        togglePasswordButton.textContent = '👁️';
+    }
+}); {% endcomment %}
+
+  {% comment %} function togglePassword() {
+    const passwordField = document.getElementById('password');
+    const togglePasswordButton = document.getElementById('togglePassword');
+
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      togglePasswordButton.textContent = '🔒';
+    } else {
+      passwordField.type = 'password';
+      togglePasswordButton.textContent = '👁️';
+    }
+  }
+   {% endcomment %}
+   
+
+function toggleVisibility(inputId) {
+  const input = document.getElementById(inputId);
+  const icon = input.nextElementSibling; // Assuming icon is right after input
+  if (input.type === "password") {
+    input.type = "text";
+    icon.textContent = "🙈"; // Eye closed
+  } else {
+    input.type = "password";
+    icon.textContent = "👁️"; // Eye open
+  }
+}
+
+</script>
+
+</body>
+</html>

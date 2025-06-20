@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Favicon with emoji (🧠 here) using inline SVG as data URI -->
+ <link rel="icon" type="image/svg+xml" 
+        href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="80" font-size="80" font-weight="bold" font-family="Arial">A🧠</text></svg>' />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top left, #1a0033, #0d001f);
+      color: #fff;
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 2rem;
+      overflow-x: hidden;
+    }
+
+    .title-button {
+       text-decoration: none;
+      font-size: 2.5rem;
+      color: #fff;
+      background: none;
+      border: 2px solid #a855f7;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      text-shadow: 0 0 10px #a855f7, 0 0 20px #9333ea;
+      box-shadow: 0 0 10px #a855f7, 0 0 20px #9333ea;
+      transition: transform 0.3s ease, box-shadow 0.4s ease;
+      animation: pulse 2s infinite;
+    }
+    @media (min-width: 768px) and (max-width: 1024px) {
+  body {
+    padding: 3rem;
+    gap: 3rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+
+  .card {
+    padding: 2rem;
+  }
+
+  .title-button {
+    font-size: 2.2rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  body {
+    padding: 4rem 6rem;
+    gap: 4rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+
+  .card {
+    padding: 2rem;
+  }
+
+  .title-button {
+    font-size: 2.5rem;
+    padding: 1rem 2.5rem;
+  }
+
+  .modal-content {
+    max-width: 600px;
+  }
+}
+
+    .title-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #c084fc, 0 0 40px #9333ea;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 10px #a855f7, 0 0 20px #9333ea;
+      }
+      50% {
+        box-shadow: 0 0 25px #c084fc, 0 0 50px #9333ea;
+      }
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #2a0047, #3a0060);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid #9333ea;
+      box-shadow: 0 0 10px #a855f7;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      animation: fadeIn 1s ease forwards;
+      opacity: 0;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
+    .card:nth-child(3) { animation-delay: 0.6s; }
+    .card:nth-child(4) { animation-delay: 0.8s; }
+    .card:nth-child(5) { animation-delay: 1s; }
+    .card:nth-child(6) { animation-delay: 1.2s; }
+    .card:nth-child(7) { animation-delay: 1.5s; }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(40px); }
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #c084fc, 0 0 40px #9333ea;
+    }
+
+    .card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #e0d3ff;
+      text-shadow: 0 0 5px #d8b4fe;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #d1b3ff;
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      display: none;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, #360060, #4c007a);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #9333ea, 0 0 60px #a855f7;
+      text-align: center;
+      max-width: 90%;
+      color: #fff;
+      animation: popIn 0.4s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal h2 {
+      color: #f5d0fe;
+      text-shadow: 0 0 10px #e879f9;
+      margin-bottom: 1rem;
+    }
+
+    .modal p {
+      color: #e9d5ff;
+      line-height: 1.5;
+    }
+
+    .close-btn {
+      margin-top: 1.5rem;
+      padding: 0.5rem 1.5rem;
+      background: #9333ea;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 0 10px #9333ea;
+    }
+
+    .close-btn:hover {
+      background: #7e22ce;
+      box-shadow: 0 0 20px #c084fc;
+    }
+
+    @media (max-width: 600px) {
+      .title-button {
+         text-decoration: none;
+        font-size: 2rem;
+        padding: 0.6rem 1.5rem;
+      }
+      .card:nth-child(1) { animation-delay: 0.2s; }
+      .card:nth-child(2) { animation-delay: 0.4s; }
+      .card:nth-child(3) { animation-delay: 0.6s; }
+      .card:nth-child(4) { animation-delay: 0.8s; }
+      .card:nth-child(5) { animation-delay: 1s; }
+      .card:nth-child(6) { animation-delay: 1.2s; }
+      .card:nth-child(7) { animation-delay: 1.5s; }
+    }
+    /* Snow Canvas Background */
+#snow-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -3;
+  pointer-events: none;
+}
+
+/* Smoke Background */
+#smoke-bg::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+  animation: smokeAnim 20s infinite linear;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.5;
+  filter: blur(100px);
+}
+
+@keyframes smokeAnim {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+  </style>
+</head>
+<body>
+
+  {% comment %} <button class="title-button" onclick="location.href='/home'">ARTIST</button> {% endcomment %}
+    <a href="{% url 'log_reg_art' %}" class="title-button"  >ARTIST</a>
+  
+  <div class="card-grid">
+    <div class="card" data-title="Private Registration" data-info="Users can sign up by entering a username, password, a short bio about themselves, uploading a profile picture, and answering a security question. After signing up, their account will not be active right away. A superuser (admin) needs to check and approve their registration first. Only after the admin approves, the user will be able to log in. When logging in, the user must enter their username, password, and answer the security question correctly. If their account is still waiting for approval, they will see a message saying that they need to wait until the admin gives permission.">
+      <h2>Private Registration</h2>
+      <p>Register without any phone number & waits for the superuser approval....</p>
+    </div>
+    <div class="card" data-title="Private Login" data-info="To log in, users must enter their username, password, and the answer to their security question. All three must be correct to access their account. If the security question is not answered or the answer is wrong, the user will not be allowed to log in. This extra step helps keep the account safe. Also, if the user’s account has not been approved by the admin yet, they will see a message saying they need to wait for approval before they can log in.">
+      <h2>Private Login</h2>
+      <p>Smart security & limited attempts & waits for the superuser approval...</p>
+    </div>
+    <div class="card" data-title="Approved userlist" data-info="After logging in, the user will see a list of all approved users on the website. These are users whose accounts have been checked and approved by the admin. Next to each approved user, there will be a "Chat" button. When a user clicks this button, both users will enter a private chat room where they can talk to each other. The chat room has a beautiful and user-friendly design with nice colors and layout, making the chat experience smooth and enjoyable.">
+      <h2>Approved userlist</h2>
+      <p>Users can chat with others users privately with out others interfearance..... </p>
+    </div>
+    <div class="card" data-title="Encrypted Chatrooms" data-info="All private chat rooms are protected with end-to-end encryption. This means that only the two people in the chat can read the messages, and no one else—not even the server or admin—can see them. This keeps every message private and secure. So, when users join a chat room, they can talk freely knowing their conversation is fully protected and safe from others.">
+      <h2>Encrypted Chatrooms</h2>
+      <p>All private chat rooms are protected with end-to-end encryption........</p>
+    </div>
+        <div class="card" data-title="File & Media Sharing" data-info="The chatroom uses WebSockets, which means messages are sent and received instantly without needing to refresh the page. This makes chatting fast and real-time, just like modern messaging apps. Inside the chatroom, users can send not only text messages but also share different types of files like images, audio, videos, PDF files, TXT files, and DOCX documents. Everything is handled smoothly so users can enjoy a fast and flexible chatting experience.">
+      <h2>File & Media Sharing</h2>
+      <p>Share different types of files like images, audio, videos, PDF files, TXT files, and DOCX documents.....</p>
+    </div>
+    <div class="card" data-title="One-on-One Chat" data-info="Users can chat privately with one another in a one-to-one chat room. This means only the two selected users can see and send messages in that room. No one else can join or view their conversation. Inside this private chat, users can send text messages as well as share files like images, audio, videos, PDF, TXT, and DOCX files. Everything shared stays between the two users, making the chat fully private and secure.">
+      <h2>One-on-One Chat</h2>
+      <p>Users can chat privately with one another in a one-to-one chat room.........</p>
+    </div>
+    <div class="card" data-title="Security with docker" data-info="The whole project is safely run using Docker, which keeps everything inside a secure container. This means the app, database, and all files are protected and run in their own safe space. Docker helps prevent outside attacks and makes sure the project works the same way every time, no matter where it's running. It also makes the project easier to manage, update, and keep secure.">
+      <h2>Docker Containerization</h2>
+      <p>The whole project is safely run using Docker, which keeps everything inside a secure container.......</p>
+    </div>
+  </div>
+  <canvas id="snow-canvas"></canvas>
+  <div id="smoke-bg"></div>
+  
+  <!-- Modal -->
+  <div class="modal" id="infoModal">
+    <div class="modal-content">
+      <h2 id="modalTitle"></h2>
+      <p id="modalText"></p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const modal = document.getElementById('infoModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalText = document.getElementById('modalText');
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        modalTitle.textContent = card.getAttribute('data-title');
+        modalText.textContent = card.getAttribute('data-info');
+        modal.style.display = 'flex';
+      });
+    });
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+    // Snow Effect
+const canvas = document.getElementById('snow-canvas');
+const ctx = canvas.getContext('2d');
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
+let snowflakes = [];
+
+function createSnowflakes() {
+  const x = Math.random() * w;
+  const y = Math.random() * h;
+  const radius = Math.random() * 3 + 1;
+  const speed = Math.random() * 1 + 0.5;
+  snowflakes.push({ x, y, radius, speed });
+}
+
+function drawSnowflakes() {
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.beginPath();
+  for (let flake of snowflakes) {
+    ctx.moveTo(flake.x, flake.y);
+    ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+  }
+  ctx.fill();
+  moveSnowflakes();
+}
+
+function moveSnowflakes() {
+  for (let flake of snowflakes) {
+    flake.y += flake.speed;
+    if (flake.y > h) {
+      flake.y = 0;
+      flake.x = Math.random() * w;
+    }
+  }
+}
+
+function updateSnowfall() {
+  drawSnowflakes();
+  requestAnimationFrame(updateSnowfall);
+}
+
+window.addEventListener('resize', () => {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+});
+
+for (let i = 0; i < 100; i++) {
+  createSnowflakes();
+}
+updateSnowfall();
+  </script>
+</body>
+</html>

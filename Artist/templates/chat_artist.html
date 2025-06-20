@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {{ room_name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Favicon with emoji (🧠 here) using inline SVG as data URI -->
+ <link rel="icon" type="image/svg+xml" 
+        href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="80" font-size="80" font-weight="bold" font-family="Arial">A🧠</text></svg>' />
+<style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #7b2ff7, #f107a3);
+            color: #fff;
+        }
+               .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(to right, #260047, #140033);
+            box-shadow: 0 0 15px #8f00ff, 0 0 30px #6a00ff inset;
+            z-index: 10;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            color: #ffde59;
+            text-shadow: 0 0 8px #ffde59, 0 0 15px #fff;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: rgba(0, 0, 0, 0)
+            opacity:0.6;
+            color: #000;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        #chat-log {
+            flex: 1;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+        }
+        #chat-log p {
+            margin: 10px 0;
+        }
+        #chat-log img, #chat-log video, #chat-log audio {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .message-meta {
+            font-size: 0.8em;
+            color: gray;
+        }
+        #chat-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        #message-input, #file-input {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            flex: 1;
+        }
+        #send-button {
+            background-color: #7b2ff7;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #6000c7;
+        }
+        a.download-link {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+        
+        .logout-btn {
+            background: #ff0055;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px #ff0055;
+        }
+
+        .logout-btn:hover {
+            background: #ff3366;
+            box-shadow: 0 0 15px #ff3366, 0 0 25px #ff3366;
+        }
+        @media (max-width: 600px) {
+            #chat-controls {
+                flex-direction: column;
+            }
+            
+        .logout-btn {
+            background: #ff0055;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px #ff0055;
+        }
+
+        .logout-btn:hover {
+            background: #ff3366;
+            box-shadow: 0 0 15px #ff3366, 0 0 25px #ff3366;
+        }
+        }
+#snow-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background: transparent;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header">
+    <h1>Hello-{{ room_name }} 👑</h1>
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+</div>
+
+
+
+    </header>
+
+    <div id="chat-container">
+        <div id="chat-log">
+            {% for msg in messages %}
+                <p><strong>{{ msg.sender.username }}:</strong>
+                    {% if msg.content %}
+                        {{ msg.content }}
+                    {% elif msg.file %}
+                        {% if msg.file_extension in "jpg jpeg png" %}
+                            <br><img src="{{ msg.file.url }}" alt="Image">
+                        {% elif msg.file_extension in "mp4" %}
+                            <br><video controls src="{{ msg.file.url }}"></video>
+                        {% elif msg.file_extension in "mp3 wav" %}
+                            <br><audio controls src="{{ msg.file.url }}"></audio>
+                        {% elif msg.file_extension in "pdf txt docx" %}
+                            <br><a class="download-link" href="{{ msg.file.url }}" download>Download {{ msg.file.name }}</a>
+                        {% endif %}
+                    {% endif %}
+                    {% comment %} <br><span class="message-meta">{{ msg.timestamp }}</span> {% endcomment %}
+                <span class="timestamp" data-time="{{ msg.timestamp|date:'c' }}"></span>
+
+                </p>
+                {% endfor %}
+                <canvas id="snow-canvas"></canvas>
+        </div>
+
+        <div id="chat-controls">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <input type="file" id="file-input">
+            <button id="send-button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const roomName = "{{ room_name }}";
+        const userName = "{{ request.user.username }}";
+
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const log = document.getElementById('chat-log');
+            let content = `<p><strong>${data.sender}:</strong> `;
+
+            if (data.message) {
+                content += data.message;
+            } else if (data.file_url) {
+                const ext = data.file_ext.toLowerCase();
+                if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                    content += `<br><img src="${data.file_url}" alt="Image">`;
+                } else if (['mp3', 'wav'].includes(ext)) {
+                    content += `<br><audio controls src="${data.file_url}"></audio>`;
+                } else if (ext === 'mp4') {
+                    content += `<br><video controls width="300" src="${data.file_url}"></video>`;
+                } else {
+                    content += `<br><a class="download-link" href="${data.file_url}" download>Download File</a>`;
+                }
+            }
+
+            content += `<br><span class="message-meta">${data.timestamp}</span></p>`;
+            log.innerHTML += content;
+            log.scrollTop = log.scrollHeight;
+        };
+
+        function sendMessage() {
+            const messageInputDom = document.getElementById('message-input');
+            const fileInput = document.getElementById('file-input');
+            const message = messageInputDom.value;
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function() {
+                    chatSocket.send(JSON.stringify({
+                        'file': reader.result,
+                        'filename': file.name
+                    }));
+                };
+                reader.readAsDataURL(file);
+            } else if (message.trim()) {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+            }
+
+            messageInputDom.value = '';
+            fileInput.value = '';
+        }
+               function convertToIST(utcTimeStr) {
+            const date = new Date(utcTimeStr);
+            const options = {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: true
+            };
+            return new Intl.DateTimeFormat('en-IN', options).format(date);
+        }
+        
+        document.querySelectorAll('.timestamp').forEach(el => {
+            const utcTime = el.getAttribute('data-time');
+            el.innerText = convertToIST(utcTime);
+        });
+        
+  const canvas = document.getElementById('snow-canvas');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let snowflakes = [];
+
+  function initCanvas() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    snowflakes = [];
+    for (let i = 0; i < 100; i++) {
+      snowflakes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 3 + 1,
+        d: Math.random() * 1 + 0.5 // slower descent
+      });
+    }
+  }
+
+  function drawSnowflakes() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.beginPath();
+    for (let i = 0; i < snowflakes.length; i++) {
+      const f = snowflakes[i];
+      ctx.moveTo(f.x, f.y);
+      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+    }
+    ctx.fill();
+    moveSnowflakes();
+  }
+
+  let angle = 0;
+
+  function moveSnowflakes() {
+    angle += 0.002; // very slow sway
+    for (let i = 0; i < snowflakes.length; i++) {
+      const f = snowflakes[i];
+      f.y += Math.pow(f.d, 1.2); // gently fall
+      f.x += Math.sin(angle) * 0.3; // gentle drift
+
+      if (f.y > height) {
+        snowflakes[i] = {
+          x: Math.random() * width,
+          y: 0,
+          r: f.r,
+          d: f.d
+        };
+      }
+    }
+  }
+
+  function animateSnow() {
+    drawSnowflakes();
+    requestAnimationFrame(animateSnow);
+  }
+
+  window.addEventListener('resize', initCanvas);
+  initCanvas();
+  animateSnow();
+
+    </script>
+</body>
+</html>

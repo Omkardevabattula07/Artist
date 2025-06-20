@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Favicon with emoji (🧠 here) using inline SVG as data URI -->
+ <link rel="icon" type="image/svg+xml" 
+        href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="80" font-size="80" font-weight="bold" font-family="Arial">A🧠</text></svg>' />
+
+    <style>
+        /* === General Reset === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a0033, #000814);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(to right, #260047, #140033);
+            box-shadow: 0 0 15px #8f00ff, 0 0 30px #6a00ff inset;
+            z-index: 10;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            color: #ffde59;
+            text-shadow: 0 0 8px #ffde59, 0 0 15px #fff;
+        }
+
+        .logout-btn {
+            background: #ff0055;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px #ff0055;
+        }
+
+        .logout-btn:hover {
+            background: #ff3366;
+            box-shadow: 0 0 15px #ff3366, 0 0 25px #ff3366;
+        }
+
+        .content {
+            padding: 20px 15px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .content h2 {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 8px #00ffff, 0 0 20px #00ffff;
+        }
+
+        .user-info {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 0;
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 12px rgba(150, 100, 255, 0.3);
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px #8f00ff;
+        }
+
+        .user-image img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #ffde59;
+            box-shadow: 0 0 10px #ffde59;
+        }
+
+        .user-details {
+            flex-grow: 1;
+        }
+
+        .user-details p {
+            margin: 5px 0;
+            line-height: 1.3;
+        }
+
+        .btn.chat {
+            background: #00cfff;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 0 10px #00cfff;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn.chat:hover {
+            background: #1af8ff;
+            box-shadow: 0 0 15px #1af8ff, 0 0 25px #1af8ff;
+        }
+
+        #snow-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @media (min-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .content h2 {
+                font-size: 2rem;
+            }
+
+            .user-card {
+                flex-direction: row;
+                gap: 20px;
+            }
+
+            .user-image img {
+                width: 75px;
+                height: 75px;
+            }
+
+            .btn.chat {
+                padding: 12px 20px;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .content {
+                padding: 40px;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 25px;
+            }
+
+            .user-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="snow-canvas"></canvas>
+
+<div class="header">
+    <h1>Welcome, {{ user.username }} 👑</h1>
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+</div>
+
+<div class="content">
+    <ul class="user-info">
+        <section class="content">
+            <h2>Approved Users</h2>
+            <ul class="user-info">
+                {% for user in approved_users %}
+                <li class="user-card">
+                    <div class="user-details">
+                        <div class="user-image" class="avatar">
+                            {% if user.pic %}
+                            <img src="{{ user.pic.url }}" alt="{{ user.user.username }}">
+                            {% else %}
+                            <span class="no-pic">No Picture</span>
+                            {% endif %}
+                        </div>
+                        <div class="user-details">
+                            <p><strong>Username:</strong> {{ user.user.username }}</p>
+                            <p><strong>Bio:</strong> {{ user.bio }}</p>
+            <a href="{% url 'chat_room' username=user.user.username %}" class="btn chat">Chat 💬</a>
+
+
+                        </div>
+                    </div>
+                  
+                </li>
+                <ul>
+                   
+                </ul>
+                {% endfor %}
+            </ul>
+        </section>
+    </body>
+        {% for u in users %}
+        <li class="user-card">
+
+            <div class="user-image">
+                {% if user.profile_pic %}
+                <img src="{{ user.pic.url }}" alt="{{ user.user.username }}">
+                {% else %}
+                <span class="no-pic">No Picture</span>
+                {% endif %}
+            </div>
+            <div class="user-details">
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+                <p><strong>Status:</strong> {{ user.profile.security_question }}</p>
+            </div>
+            <a href="{% url 'chat' username=user.user.username %}" class="btn chat">Chat 💬</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    const canvas = document.getElementById('snow-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const snowflakes = [];
+
+    function createSnowflake() {
+        return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 4 + 1,
+            speed: Math.random() * 1 + 0.5,
+            wind: Math.random() * 1 - 0.5
+        };
+    }
+
+    for (let i = 0; i < 100; i++) {
+        snowflakes.push(createSnowflake());
+    }
+
+    function drawSnowflakes() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        for (const flake of snowflakes) {
+            ctx.moveTo(flake.x, flake.y);
+            ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+        }
+        ctx.fill();
+        updateSnowflakes();
+        requestAnimationFrame(drawSnowflakes);
+    }
+
+    function updateSnowflakes() {
+        for (const flake of snowflakes) {
+            flake.y += flake.speed;
+            flake.x += flake.wind;
+
+            if (flake.y > height) {
+                flake.y = 0;
+                flake.x = Math.random() * width;
+            }
+
+            if (flake.x > width || flake.x < 0) {
+                flake.x = Math.random() * width;
+            }
+        }
+    }
+
+    drawSnowflakes();
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+</script>
+
+</body>
+</html>
